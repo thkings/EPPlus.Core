@@ -29,13 +29,8 @@
  * Jan Källman		Added		25-Oct-2012
  *******************************************************************************/
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using Ionic.Zip;
-using System.IO;
 using System.Xml;
-using OfficeOpenXml.Packaging.Ionic.Zlib;
 
 #if !COREFX
 using System.Web;
@@ -91,7 +86,9 @@ namespace OfficeOpenXml.Packaging
         }
         internal ZipPackageRelationship GetRelationship(string id)
         {
-            return _rels[id];
+            if (_rels.ContainsKey(id))
+                return _rels[id];
+            return null;
         }
         internal void ReadRelation(string xml, string source)
         {
@@ -111,7 +108,7 @@ namespace OfficeOpenXml.Packaging
                 catch
                 {
                     //The URI is not a valid URI. Encode it to make i valid.
-                    rel.TargetUri = new Uri(Uri.EscapeUriString("Invalid:URI "+c.GetAttribute("Target")), UriKind.RelativeOrAbsolute);
+                    rel.TargetUri = new Uri(Uri.EscapeUriString("Invalid:URI " + c.GetAttribute("Target")), UriKind.RelativeOrAbsolute);
                 }
                 if (!string.IsNullOrEmpty(source))
                 {
